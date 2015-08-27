@@ -26,6 +26,7 @@ trait AccessTrait
 		else
 		{
 			// Fallback for stdClass objects
+			//return (array) $val;
 			return json_decode(json_encode($val), true);
 		}
 	}
@@ -52,5 +53,15 @@ trait AccessTrait
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Convert object in a json string
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return json_encode($this->asArray(true));
 	}
 }

@@ -116,7 +116,7 @@ class ErrorCollection implements AccessInterface
 	 * @param Error $error The Error
 	 * @return self
 	 */
-	protected function addError(Error $error)
+	public function addError(Error $error)
 	{
 		$this->errors[] = $error;
 

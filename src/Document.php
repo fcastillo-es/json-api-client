@@ -227,7 +227,7 @@ class Document implements AccessInterface
 	 * @param null|object $data The Data
 	 * @return self
 	 */
-	protected function setData($data)
+	public function setData($data)
 	{
 		$this->data = $this->parseData($data);
 	}
@@ -275,5 +275,17 @@ class Document implements AccessInterface
 		}
 
 		return $resource;
+	}
+
+	public function addError(\stdClass $error)
+	{
+		$this->data = false;
+		$this->included = null;
+
+		if (is_null($this->errors)) {
+			$this->errors = new ErrorCollection([$error]);
+		} else {
+			$this->errors->addError(new Error($error));
+		}
 	}
 }

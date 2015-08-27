@@ -15,6 +15,11 @@ class Meta implements AccessInterface
 {
 	use AccessTrait;
 
+	public static function createFromString($json)
+	{
+		return new Meta(json_decode($json));
+	}
+
 	protected $_data = array();
 
 	/**
@@ -65,7 +70,19 @@ class Meta implements AccessInterface
 	 */
 	public function getKeys()
 	{
-		return array_keys($this->_data);
+		$keys = array();
+
+		if ( count($this->_data) === 0 )
+		{
+			return $keys;
+		}
+
+		foreach ( $this->_data as $key => $value )
+		{
+			$keys[] = $key;
+		}
+
+		return $keys;
 	}
 
 	/**
@@ -93,7 +110,7 @@ class Meta implements AccessInterface
 	 *
 	 * @return self
 	 */
-	protected function set($name, $value)
+	public function set($name, $value)
 	{
 		$this->_data[$name] = $value;
 

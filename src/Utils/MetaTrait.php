@@ -40,8 +40,8 @@ trait MetaTrait
 	 * @param null|ResourceIdentifier $data The Data
 	 * @return self
 	 */
-	protected function setMeta($meta)
+	public function setMeta($meta)
 	{
-		$this->meta = new Meta($meta);
+		$this->meta = $meta instanceof Meta? $meta : new Meta($meta);
 	}
 }

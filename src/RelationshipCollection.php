@@ -104,7 +104,7 @@ class RelationshipCollection implements AccessInterface
 	 *
 	 * @return self
 	 */
-	protected function set($name, Relationship $value)
+	public function set($name, Relationship $value)
 	{
 		$this->_data[$name] = $value;
 
