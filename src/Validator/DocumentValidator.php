@@ -10,8 +10,16 @@ namespace Art4\JsonApiClient\Validator;
 
 use Art4\JsonApiClient\Exception\ValidationException;
 
+/**
+ * Validates a json api document
+ * @package Art4\JsonApiClient\Validator
+ */
 class DocumentValidator
 {
+    /**
+     * Validates a document object structure
+     * @param object $object
+     */
     public function validate($object)
     {
         if ( ! is_object($object) )
