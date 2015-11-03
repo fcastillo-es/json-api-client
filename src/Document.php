@@ -7,6 +7,7 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\DocumentValidator;
 
 /**
  * Document Top Level Object
@@ -28,6 +29,11 @@ final class Document implements DocumentInterface
 	protected $manager;
 
 	/**
+	 * @var DocumentValidator
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The document body
 	 *
 	 * @return Document
@@ -36,20 +42,8 @@ final class Document implements DocumentInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('Document has to be an object, "' . gettype($object) . '" given.');
-		}
-
-		if ( ! property_exists($object, 'data') and ! property_exists($object, 'meta') and ! property_exists($object, 'errors') )
-		{
-			throw new ValidationException('Document MUST contain at least one of the following properties: data, errors, meta');
-		}
-
-		if ( property_exists($object, 'data') and property_exists($object, 'errors') )
-		{
-			throw new ValidationException('The properties `data` and `errors` MUST NOT coexist in Document.');
-		}
+		$this->validator = new DocumentValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
@@ -150,11 +144,6 @@ final class Document implements DocumentInterface
 				'Resource\Collection',
 				[$data, $this->manager]
 			);
-		}
-
-		if ( ! is_object($data) )
-		{
-			throw new ValidationException('Data value has to be null or an object, "' . gettype($data) . '" given.');
 		}
 
 		$object_vars = get_object_vars($data);
