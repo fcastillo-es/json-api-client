@@ -7,6 +7,7 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\AttributesValidator;
 
 /**
  * Attributes Object
@@ -28,6 +29,11 @@ final class Attributes implements AttributesInterface
 	protected $manager;
 
 	/**
+	 * @var AttributesValidator
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The object
 	 *
 	 * @return self
@@ -36,15 +42,8 @@ final class Attributes implements AttributesInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('Attributes has to be an object, "' . gettype($object) . '" given.');
-		}
-
-		if ( property_exists($object, 'type') or property_exists($object, 'id') or property_exists($object, 'relationships') or property_exists($object, 'links') )
-		{
-			throw new ValidationException('These properties are not allowed in attributes: `type`, `id`, `relationships`, `links`');
-		}
+		$this->validator = new AttributesValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
