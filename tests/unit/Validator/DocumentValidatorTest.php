@@ -6,7 +6,7 @@
  * Time: 17:17
  */
 
-namespace Validator;
+namespace Art4\JsonApiClient\Validator\Tests;
 
 use Art4\JsonApiClient\Validator\DocumentValidator;
 

@@ -3,15 +3,14 @@
  * Created by PhpStorm.
  * User: fernando
  * Date: 4/11/15
- * Time: 17:22
+ * Time: 17:48
  */
 
 namespace Art4\JsonApiClient\Validator\Tests;
 
+use Art4\JsonApiClient\Validator\DocumentLinkValidator;
 
-use Art4\JsonApiClient\Validator\AttributesValidator;
-
-class AttributesValidatorTest extends \PHPUnit_Framework_TestCase
+class DocumentLinkValidatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException Art4\JsonApiClient\Exception\ValidationException
@@ -19,7 +18,7 @@ class AttributesValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidStringInput()
     {
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate('test');
     }
 
@@ -29,7 +28,7 @@ class AttributesValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidIntegerInput()
     {
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate(123);
     }
 
@@ -39,7 +38,7 @@ class AttributesValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidArrayInput()
     {
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate([]);
     }
 
@@ -49,70 +48,43 @@ class AttributesValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidBooleanInput()
     {
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate(true);
     }
 
     /**
      * @expectedException Art4\JsonApiClient\Exception\ValidationException
+     * @expectedExceptionMessage self
      */
-    public function testInvalidObjectWithTypeProperty()
+    public function testInvalidObjectWithWrongSelf()
     {
         $obj = new \stdClass();
-        $obj->ok = 'foo';
-        $obj->type = 'foo';
+        $obj->self = 123;
 
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate($obj);
     }
 
     /**
      * @expectedException Art4\JsonApiClient\Exception\ValidationException
+     * @expectedExceptionMessage related
      */
-    public function testInvalidObjectWithIdProperty()
+    public function testInvalidObjectWithWrongRelated()
     {
         $obj = new \stdClass();
-        $obj->ok = 'foo';
-        $obj->id = 'foo';
+        $obj->related = 123;
 
-        $validator = new AttributesValidator();
-        $validator->validate($obj);
-    }
-
-    /**
-     * @expectedException Art4\JsonApiClient\Exception\ValidationException
-     */
-    public function testInvalidObjectWithRelationshipsProperty()
-    {
-        $obj = new \stdClass();
-        $obj->ok = 'foo';
-        $obj->relationships = 'foo';
-
-        $validator = new AttributesValidator();
-        $validator->validate($obj);
-    }
-
-    /**
-     * @expectedException Art4\JsonApiClient\Exception\ValidationException
-     */
-    public function testInvalidObjectWithLinksProperty()
-    {
-        $obj = new \stdClass();
-        $obj->ok = 'foo';
-        $obj->links = 'foo';
-
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate($obj);
     }
 
     public function testValidObject()
     {
         $obj = new \stdClass();
-        $obj->ok = 'foo';
+        $obj->self = 'http://example.com/self';
+        $obj->related = 'http://example.com/related';
 
-        $validator = new AttributesValidator();
+        $validator = new DocumentLinkValidator();
         $validator->validate($obj);
-
-        $this->assertTrue(true);
     }
 }

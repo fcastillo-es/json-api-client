@@ -7,6 +7,7 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\DocumentLinkValidator;
 
 /**
  * Document Link Object
@@ -33,6 +34,11 @@ final class DocumentLink implements DocumentLinkInterface
 	protected $manager;
 
 	/**
+	 * @var DocumentLinkValidator
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The link object
 	 *
 	 * @return self
@@ -41,10 +47,8 @@ final class DocumentLink implements DocumentLinkInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('DocumentLink has to be an object, "' . gettype($object) . '" given.');
-		}
+		$this->validator = new DocumentLinkValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
@@ -52,21 +56,11 @@ final class DocumentLink implements DocumentLinkInterface
 
 		if ( property_exists($object, 'self') )
 		{
-			if ( ! is_string($object->self) )
-			{
-				throw new ValidationException('property "self" has to be a string, "' . gettype($object->self) . '" given.');
-			}
-
 			$this->container->set('self', $object->self);
 		}
 
 		if ( property_exists($object, 'related') )
 		{
-			if ( ! is_string($object->related) )
-			{
-				throw new ValidationException('property "related" has to be a string, "' . gettype($object->related) . '" given.');
-			}
-
 			$this->container->set('related', $object->related);
 		}
 
