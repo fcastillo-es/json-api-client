@@ -7,6 +7,7 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\ErrorCollectionValidator;
 
 /**
  * Error Collection Object
@@ -28,6 +29,11 @@ final class ErrorCollection implements ErrorCollectionInterface
 	protected $manager;
 
 	/**
+	 * @var ErrorCollectionValidator
+	 */
+	protected $validator;
+
+	/**
 	 * @param array $resources The resources as array
 	 *
 	 * @return self
@@ -36,15 +42,8 @@ final class ErrorCollection implements ErrorCollectionInterface
 	 */
 	public function __construct($errors, FactoryManagerInterface $manager)
 	{
-		if ( ! is_array($errors) )
-		{
-			throw new ValidationException('Errors for a collection has to be in an array, "' . gettype($errors) . '" given.');
-		}
-
-		if ( count($errors) === 0 )
-		{
-			throw new ValidationException('Errors array cannot be empty and MUST have at least one object');
-		}
+		$this->validator = new ErrorCollectionValidator();
+		$this->validator->validate($errors);
 
 		$this->manager = $manager;
 
