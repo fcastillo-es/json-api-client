@@ -14,7 +14,7 @@ use Art4\JsonApiClient\Exception\ValidationException;
  * Validates a json api document link
  * @package Art4\JsonApiClient\Validator
  */
-class DocumentLinkValidator
+class DocumentLinkValidator implements ValidatorInterface
 {
     /**
      * Validates a document link object structure

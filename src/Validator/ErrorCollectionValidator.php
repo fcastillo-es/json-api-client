@@ -13,7 +13,7 @@ use Art4\JsonApiClient\Exception\ValidationException;
  * Validates a json api error collection
  * @package Art4\JsonApiClient\Validator
  */
-class ErrorCollectionValidator
+class ErrorCollectionValidator implements ValidatorInterface
 {
     /**
      * Validates a error collection object structure

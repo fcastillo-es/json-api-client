@@ -14,7 +14,7 @@ use Art4\JsonApiClient\Exception\ValidationException;
  * Validates json api attributes
  * @package Art4\JsonApiClient\Validator
  */
-class AttributesValidator
+class AttributesValidator implements ValidatorInterface
 {
     /**
      * Validates an attributes object structure
