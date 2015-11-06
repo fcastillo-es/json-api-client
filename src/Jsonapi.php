@@ -7,6 +7,8 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\JsonapiValidator;
+use Art4\JsonApiClient\Validator\ValidatorInterface;
 
 /**
  * JSON API Object
@@ -28,6 +30,11 @@ final class Jsonapi implements JsonapiInterface
 	protected $manager;
 
 	/**
+	 * @var ValidatorInterface
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The error object
 	 *
 	 * @return self
@@ -36,10 +43,8 @@ final class Jsonapi implements JsonapiInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('Jsonapi has to be an object, "' . gettype($object) . '" given.');
-		}
+		$this->validator = new JsonapiValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
@@ -47,11 +52,6 @@ final class Jsonapi implements JsonapiInterface
 
 		if ( property_exists($object, 'version') )
 		{
-			if ( is_object($object->version) or is_array($object->version) )
-			{
-				throw new ValidationException('property "version" cannot be an object or array, "' . gettype($object->version) . '" given.');
-			}
-
 			$this->container->set('version', strval($object->version));
 		}
 
