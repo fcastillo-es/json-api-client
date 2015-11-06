@@ -7,6 +7,8 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\ErrorLinkValidator;
+use Art4\JsonApiClient\Validator\ValidatorInterface;
 
 /**
  * Error Link Object
@@ -32,6 +34,11 @@ final class ErrorLink implements ErrorLinkInterface
 	protected $manager;
 
 	/**
+	 * @var ValidatorInterface
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The link object
 	 *
 	 * @return self
@@ -40,20 +47,8 @@ final class ErrorLink implements ErrorLinkInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('Link has to be an object, "' . gettype($object) . '" given.');
-		}
-
-		if ( ! property_exists($object, 'about') )
-		{
-			throw new ValidationException('ErrorLink MUST contain these properties: about');
-		}
-
-		if ( ! is_string($object->about) and ! is_object($object->about) )
-		{
-			throw new ValidationException('Link has to be an object or string, "' . gettype($object->about) . '" given.');
-		}
+		$this->validator = new ErrorLinkValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
