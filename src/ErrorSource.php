@@ -7,6 +7,8 @@ use Art4\JsonApiClient\Utils\DataContainer;
 use Art4\JsonApiClient\Utils\FactoryManagerInterface;
 use Art4\JsonApiClient\Exception\AccessException;
 use Art4\JsonApiClient\Exception\ValidationException;
+use Art4\JsonApiClient\Validator\ErrorSourceValidator;
+use Art4\JsonApiClient\Validator\ValidatorInterface;
 
 /**
  * Error Source Object
@@ -28,6 +30,11 @@ final class ErrorSource implements ErrorSourceInterface
 	protected $manager;
 
 	/**
+	 * @var ValidatorInterface
+	 */
+	protected $validator;
+
+	/**
 	 * @param object $object The error source object
 	 *
 	 * @return self
@@ -36,10 +43,8 @@ final class ErrorSource implements ErrorSourceInterface
 	 */
 	public function __construct($object, FactoryManagerInterface $manager)
 	{
-		if ( ! is_object($object) )
-		{
-			throw new ValidationException('ErrorSource has to be an object, "' . gettype($object) . '" given.');
-		}
+		$this->validator = new ErrorSourceValidator();
+		$this->validator->validate($object);
 
 		$this->manager = $manager;
 
@@ -47,21 +52,11 @@ final class ErrorSource implements ErrorSourceInterface
 
 		if ( property_exists($object, 'pointer') )
 		{
-			if ( ! is_string($object->pointer) )
-			{
-				throw new ValidationException('property "pointer" has to be a string, "' . gettype($object->pointer) . '" given.');
-			}
-
 			$this->container->set('pointer', strval($object->pointer));
 		}
 
 		if ( property_exists($object, 'parameter') )
 		{
-			if ( ! is_string($object->parameter) )
-			{
-				throw new ValidationException('property "parameter" has to be a string, "' . gettype($object->parameter) . '" given.');
-			}
-
 			$this->container->set('parameter', strval($object->parameter));
 		}
 
