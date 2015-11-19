@@ -288,4 +288,17 @@ class Document implements AccessInterface
 			$this->errors->addError(new Error($error));
 		}
 	}
+
+	public function addIncluded(\stdClass $item)
+	{
+		if ($this->data === false) {
+			//throw new ValidationException('If $object does not contain a `data` property, the `included` property MUST NOT be present either.');
+		}
+
+		if ($this->included instanceof Collection) {
+			$this->included->addResource($this->included->parseResource($item));
+		} else {
+			$this->included = new Collection([$item]);
+		}
+	}
 }

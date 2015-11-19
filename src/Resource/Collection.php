@@ -115,7 +115,7 @@ class Collection implements AccessInterface, ResourceInterface
 	 * @param ResourceInterface $resource The resource
 	 * @return ResourceInterface[] The resources as array
 	 */
-	protected function addResource(ResourceInterface $resource)
+	public function addResource(ResourceInterface $resource)
 	{
 		return $this->resources[] = $resource;
 	}
@@ -126,7 +126,7 @@ class Collection implements AccessInterface, ResourceInterface
 	 * @param object $data The resource data
 	 * @return ResourceInterface The resource
 	 */
-	protected function parseResource($data)
+	public function parseResource($data)
 	{
 		if ( ! is_object($data) )
 		{
